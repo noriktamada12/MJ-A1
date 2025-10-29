@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplikasi Pencatatan Pengeluaran</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+    color: #f5f5f5;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    padding: 20px;
+  }
+  
+  /* Animasi Bunga Plum Background */
+  .plum-flower {
+    position: fixed;
+    font-size: 60px;
+    opacity: 0.12;
+    animation: float-plum 25s infinite ease-in-out;
+    pointer-events: none;
+    z-index: 0;
+    filter: drop-shadow(0 0 10px rgba(219, 112, 147, 0.3));
+  }
+  
+  .plum-flower:nth-child(1) {
+    top: 5%;
+    left: 8%;
+    animation-delay: 0s;
+    animation-duration: 28s;
+  }
+  .plum-flower:nth-child(2) {
+    top: 15%;
+    right: 12%;
+    animation-delay: 4s;
+    animation-duration: 32s;
+  }
+  .plum-flower:nth-child(3) {
+    bottom: 25%;
+    left: 15%;
+    animation-delay: 8s;
+    animation-duration: 26s;
+  }
+  .plum-flower:nth-child(4) {
+    top: 40%;
+    right: 20%;
+    animation-delay: 2s;
+    animation-duration: 30s;
+  }
+  .plum-flower:nth-child(5) {
+    bottom: 15%;
+    right: 8%;
+    animation-delay: 10s;
+    animation-duration: 29s;
+  }
+  .plum-flower:nth-child(6) {
+    top: 65%;
+    left: 25%;
+    animation-delay: 6s;
+    animation-duration: 27s;
+  }
+  .plum-flower:nth-child(7) {
+    top: 50%;
+    left: 5%;
+    animation-delay: 12s;
+    animation-duration: 31s;
+  }
+  
+  @keyframes float-plum {
+    0%, 100% {
+      transform: translate(0, 0) rotate(0deg) scale(1);
+      opacity: 0.12;
+    }
+    25% {
+      transform: translate(30px, -40px) rotate(90deg) scale(1.15);
+      opacity: 0.18;
+    }
+    50% {
+      transform: translate(-20px, -80px) rotate(180deg) scale(0.95);
+      opacity: 0.1;
+    }
+    75% {
+      transform: translate(40px, -50px) rotate(270deg) scale(1.08);
+      opacity: 0.15;
+    }
+  }
+  
+  /* Header Mewah */
+  header {
+    text-align: center;
+    padding: 40px 20px 20px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .app-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #ffffff 0%, #e8e8e8 50%, #ffffff 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+    margin-bottom: 10px;
+  }
+  
+  .app-subtitle {
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #999;
+    font-weight: 300;
+  }
+  
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  
+  /* Container Utama */
+  .main-container {
+    max-width: 900px;
+    margin: 30px auto;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Card Control Panel */
+  .control-panel {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 25px;
+    padding: 35px;
+    margin-bottom: 25px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4), 
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Tombol Mic Khusus */
+  .mic-btn {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.25),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  .mic-btn::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  
+  .mic-btn:hover {
+    transform: scale(1.15) translateY(-5px);
+    box-shadow: 0 15px 40px rgba(255, 255, 255, 0.35),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mic-btn:hover::before {
+    opacity: 1;
+  }
+  
+  /* Tombol Standar */
+  button {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  button:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  button:active {
+    transform: translateY(0);
+  }
+  
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    margin: 25px 0;
+  }
+  
+  /* Table Card */
+  .table-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 25px;
+    padding: 35px;
+    margin-bottom: 25px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+  
+  /* Table */
+  .table-wrapper {
+    overflow-x: auto;
+    border-radius: 15px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  
+  thead {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+  }
+  
+  th {
+    padding: 18px 15px;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #fff;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  td {
+    padding: 16px 15px;
+    color: #e0e0e0;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  tbody tr {
+    transition: all 0.3s ease;
+  }
+  
+  tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: scale(1.01);
+  }
+  
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+  
+  /* Summary Card */
+  .summary-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 25px;
+    padding: 35px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .summary-item {
+    text-align: center;
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+  }
+  
+  .summary-item:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  .summary-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #999;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  
+  .summary-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+  
+  /* Popup Mewah */
+  .popup-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    z-index: 1000;
+  }
+  
+  .popup-bg.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .popup {
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(20, 20, 20, 0.98));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 40px;
+    border-radius: 25px;
+    width: 90%;
+    max-width: 420px;
+    text-align: center;
+    animation: popupIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  @keyframes popupIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9) translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  
+  .popup h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+  
+  .popup input {
+    width: 100%;
+    padding: 16px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    margin: 12px 0;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  
+  .popup input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+  
+  .popup input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+  
+  .popup-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+  }
+  
+  .popup-buttons button {
+    flex: 1;
+    padding: 14px;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .app-title {
+      font-size: 32px;
+    }
+    
+    .control-panel,
+    .table-card,
+    .summary-card {
+      padding: 25px;
+    }
+    
+    .summary-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    th, td {
+      padding: 12px 10px;
+      font-size: 12px;
+    }
+  }
+</style>
+</head>
+<body>
+<!-- Animasi Bunga Plum Background -->
+<div class="plum-flower">🌸</div>
+<div class="plum-flower">🌸</div>
+<div class="plum-flower">🌸</div>
+<div class="plum-flower">🌸</div>
+<div class="plum-flower">🌸</div>
+<div class="plum-flower">🌸</div>
+<div class="plum-flower">🌸</div>
+
+<header>
+  <h1 class="app-title">Madda J</h1>
+  <p class="app-subtitle">Catatan Keuangan</p>
+</header>
+
+<div class="main-container">
+  <!-- Control Panel -->
+  <div class="control-panel">
+    <div class="button-group">
+      <button id="micBtn" class="mic-btn"></button>
+      <button id="manualBtn">✨ Tambah Manual</button>
+      <button id="resetBtn">🗑️ Reset Semua</button>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <div class="button-group">
+      <button id="filterHari">📅 Harian</button>
+      <button id="filterBulan">📆 Bulanan</button>
+      <button id="filterTahun">📊 Tahunan</button>
+    </div>
+  </div>
+  
+  <!-- Table Data -->
+  <div class="table-card">
+    <h2 class="section-title">Riwayat Transaksi</h2>
+    <div class="table-wrapper">
+      <table id="tabelData">
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Hari</th>
+            <th>Keterangan</th>
+            <th>Jumlah</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Summary -->
+  <div class="summary-card">
+    <h2 class="section-title">Ringkasan Pengeluaran</h2>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-label">Total Harian</div>
+        <div class="summary-value">Rp <span id="totalHari">0</span></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">Total Bulanan</div>
+        <div class="summary-value">Rp <span id="totalBulan">0</span></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">Total Tahunan</div>
+        <div class="summary-value">Rp <span id="totalTahun">0</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Popup -->
+<div class="popup-bg" id="popupBg">
+  <div class="popup">
+    <h3>Tambah Pengeluaran</h3>
+    <input type="text" id="manualKet" placeholder="Keterangan pengeluaran...">
+    <input type="number" id="manualJumlah" placeholder="Jumlah (Rp)">
+    <div class="popup-buttons">
+      <button id="simpanManual">💾 Simpan</button>
+      <button id="batalManual">❌ Batal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const tabelBody = document.querySelector('#tabelData tbody');
+const totalHariEl = document.getElementById('totalHari');
+const totalBulanEl = document.getElementById('totalBulan');
+const totalTahunEl = document.getElementById('totalTahun');
+let data = [];
+
+function loadData() {
+  data = JSON.parse(localStorage.getItem('pengeluaran')) || [];
+}
+
+function formatTanggal(date){
+  const d = new Date(date);
+  const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  return {tanggal: d.toLocaleDateString('id-ID'), hari: hari[d.getDay()]};
+}
+
+function simpanData(){
+  localStorage.setItem('pengeluaran', JSON.stringify(data));
+  render();
+}
+
+function render(){
+  tabelBody.innerHTML = '';
+  if(data.length === 0) {
+    tabelBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#666;">Belum ada data pengeluaran</td></tr>';
+  } else {
+    data.forEach((item, index) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${item.tanggal}</td>
+        <td>${item.hari}</td>
+        <td>${item.ket}</td>
+        <td>Rp ${item.jumlah.toLocaleString('id-ID')}</td>
+        <td><button onclick="hapus(${index})" style="padding:8px 16px; font-size:12px;">Hapus</button></td>
+      `;
+      tabelBody.appendChild(tr);
+    });
+  }
+  hitungTotal();
+}
+
+function hapus(i){
+  if(confirm('Hapus data ini?')) {
+    data.splice(i,1);
+    simpanData();
+  }
+}
+
+function hitungTotal(){
+  const now = new Date();
+  let totalH = 0, totalB = 0, totalT = 0;
+  data.forEach(item => {
+    const d = new Date(item.dateObj);
+    if(d.toDateString() === now.toDateString()) totalH += item.jumlah;
+    if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) totalB += item.jumlah;
+    if(d.getFullYear() === now.getFullYear()) totalT += item.jumlah;
+  });
+  totalHariEl.textContent = totalH.toLocaleString('id-ID');
+  totalBulanEl.textContent = totalB.toLocaleString('id-ID');
+  totalTahunEl.textContent = totalT.toLocaleString('id-ID');
+}
+
+// Voice Recognition
+const micBtn = document.getElementById('micBtn');
+let recognition;
+if ('webkitSpeechRecognition' in window) {
+  recognition = new webkitSpeechRecognition();
+  recognition.lang = 'id-ID';
+  recognition.onresult = function(e){
+    const text = e.results[0][0].transcript.toLowerCase();
+    const match = text.match(/(.*?)\s*(\d+(?:\s*ribu|\s*juta)?)/);
+    if(match){
+      let ket = match[1].trim();
+      let jumlah = match[2].replace(/ribu/g,'000').replace(/juta/g,'000000').replace(/\D/g,'');
+      tambahData(ket, parseInt(jumlah));
+    }
+  };
+}
+micBtn.onclick = ()=> recognition && recognition.start();
+
+function tambahData(ket,jumlah){
+  const now = new Date();
+  const f = formatTanggal(now);
+  data.push({dateObj: now, tanggal: f.tanggal, hari: f.hari, ket, jumlah});
+  simpanData();
+}
+
+// Popup manual
+const popupBg = document.getElementById('popupBg');
+const manualBtn = document.getElementById('manualBtn');
+const simpanManual = document.getElementById('simpanManual');
+const batalManual = document.getElementById('batalManual');
+
+manualBtn.onclick = ()=> popupBg.classList.add('active');
+batalManual.onclick = ()=> popupBg.classList.remove('active');
+
+simpanManual.onclick = ()=>{
+  const ket = document.getElementById('manualKet').value.trim();
+  const jumlah = parseInt(document.getElementById('manualJumlah').value);
+  if(!ket || !jumlah) {
+    alert('Mohon isi semua field!');
+    return;
+  }
+  tambahData(ket, jumlah);
+  document.getElementById('manualKet').value = '';
+  document.getElementById('manualJumlah').value = '';
+  popupBg.classList.remove('active');
+};
+
+document.getElementById('resetBtn').onclick = ()=>{
+  if(confirm('Hapus semua data pengeluaran?')){
+    data = [];
+    simpanData();
+  }
+};
+
+// Load data saat halaman dimuat
+loadData();
+render();
+</script>
+</body>
+</html>
